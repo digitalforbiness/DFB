@@ -3,6 +3,8 @@ import { AnimatePresence, motion } from 'framer-motion'
 import Reveal from '../components/ui/Reveal'
 import AnimatedText from '../components/ui/AnimatedText'
 import Icon from '../components/ui/Icon'
+import HCaptcha from '../components/ui/HCaptcha'
+import { submitContact } from '../lib/submitForm'
 import { fadeUp, staggerContainer, easeApple } from '../lib/motion'
 
 const benefits = [
@@ -22,7 +24,43 @@ const fieldClass =
 const labelClass = 'font-label-caps text-label-caps text-deep-navy/60'
 
 export default function DevenirPartenaire() {
-  const [sent, setSent] = useState(false)
+  const [status, setStatus] = useState('idle') // idle | sending | sent | error
+  const [error, setError] = useState('')
+  const [captchaToken, setCaptchaToken] = useState('')
+
+  async function handleSubmit(e) {
+    e.preventDefault()
+    if (!captchaToken) {
+      setError('Veuillez valider le captcha avant d’envoyer.')
+      setStatus('error')
+      return
+    }
+    const form = e.currentTarget
+    const data = new FormData(form)
+    setStatus('sending')
+    setError('')
+    try {
+      await submitContact({
+        subject: `Candidature partenaire — ${data.get('Entreprise') || ''}`.trim(),
+        captchaToken,
+        Entreprise: data.get('Entreprise'),
+        'Site web': data.get('Site web'),
+        'Personne de contact': data.get('Personne de contact'),
+        'Email professionnel': data.get('Email professionnel'),
+        'Type de partenariat': data.get('Type de partenariat'),
+        Proposition: data.get('Proposition'),
+      })
+      form.reset()
+      setCaptchaToken('')
+      setStatus('sent')
+    } catch (err) {
+      setError(err.message)
+      setCaptchaToken('')
+      setStatus('error')
+    }
+  }
+
+  const sending = status === 'sending'
 
   return (
     <div className="overflow-hidden bg-background text-on-background">
@@ -115,55 +153,59 @@ export default function DevenirPartenaire() {
           <div className="lg:col-span-7">
             <div className="rounded-xl border border-white bg-white/70 p-10 shadow-2xl backdrop-blur-md">
               <AnimatePresence mode="wait">
-                {sent ? (
+                {status === 'sent' ? (
                   <motion.div key="ok" initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} className="flex min-h-[420px] flex-col items-center justify-center text-center">
                     <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 200, damping: 14, delay: 0.1 }} className="mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-deep-navy">
                       <Icon name="handshake" className="text-3xl text-golden-accent" filled />
                     </motion.div>
                     <h3 className="mb-2 font-headline-md text-headline-md text-deep-navy">Candidature reçue !</h3>
                     <p className="max-w-sm text-on-surface-variant">Notre comité exécutif reviendra vers vous sous 7 jours ouvrés.</p>
-                    <button onClick={() => setSent(false)} className="mt-8 font-label-caps text-label-caps uppercase text-deep-navy hover:text-secondary">Nouvelle candidature</button>
+                    <button onClick={() => setStatus('idle')} className="mt-8 font-label-caps text-label-caps uppercase text-deep-navy hover:text-secondary">Nouvelle candidature</button>
                   </motion.div>
                 ) : (
-                  <motion.form key="form" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onSubmit={(e) => { e.preventDefault(); setSent(true) }} className="space-y-6">
+                  <motion.form key="form" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onSubmit={handleSubmit} className="space-y-6">
                     <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                       <div className="space-y-2">
                         <label className={labelClass}>Nom de l'Entreprise</label>
-                        <input className={fieldClass} placeholder="SARL Tech Solutions" type="text" required />
+                        <input className={fieldClass} name="Entreprise" placeholder="SARL Tech Solutions" type="text" required />
                       </div>
                       <div className="space-y-2">
                         <label className={labelClass}>Site Web</label>
-                        <input className={fieldClass} placeholder="https://www.exemple.com" type="url" />
+                        <input className={fieldClass} name="Site web" placeholder="https://www.exemple.com" type="url" />
                       </div>
                     </div>
                     <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                       <div className="space-y-2">
                         <label className={labelClass}>Personne de Contact</label>
-                        <input className={fieldClass} placeholder="Jean Dupont" type="text" required />
+                        <input className={fieldClass} name="Personne de contact" placeholder="Jean Dupont" type="text" required />
                       </div>
                       <div className="space-y-2">
                         <label className={labelClass}>Email Professionnel</label>
-                        <input className={fieldClass} placeholder="contact@entreprise.com" type="email" required />
+                        <input className={fieldClass} name="Email professionnel" placeholder="contact@entreprise.com" type="email" required />
                       </div>
                     </div>
                     <div className="space-y-2">
                       <label className={labelClass}>Type de Partenariat</label>
-                      <select className={fieldClass}>
-                        <option value="technology">Partenariat Technologique</option>
-                        <option value="financial">Partenariat Financier / Investissement</option>
-                        <option value="marketing">Partenariat Marketing / Co-branding</option>
-                        <option value="reseller">Distributeur / Revendeur</option>
-                        <option value="other">Autre</option>
+                      <select className={fieldClass} name="Type de partenariat" defaultValue="Partenariat Technologique">
+                        <option>Partenariat Technologique</option>
+                        <option>Partenariat Financier / Investissement</option>
+                        <option>Partenariat Marketing / Co-branding</option>
+                        <option>Distributeur / Revendeur</option>
+                        <option>Autre</option>
                       </select>
                     </div>
                     <div className="space-y-2">
                       <label className={labelClass}>Votre Proposition</label>
-                      <textarea className={`${fieldClass} resize-none`} placeholder="Décrivez votre vision pour cette collaboration..." rows="5" />
+                      <textarea className={`${fieldClass} resize-none`} name="Proposition" placeholder="Décrivez votre vision pour cette collaboration..." rows="5" />
                     </div>
+                    <HCaptcha theme="light" onVerify={setCaptchaToken} onExpire={() => setCaptchaToken('')} />
+                    {status === 'error' && (
+                      <p className="text-sm text-red-500" role="alert">{error}</p>
+                    )}
                     <div className="pt-6">
-                      <motion.button whileTap={{ scale: 0.98 }} type="submit" className="group flex w-full items-center justify-center gap-3 rounded bg-deep-navy py-4 font-headline-md text-headline-md text-white transition-all hover:bg-black">
-                        Soumettre la Candidature
-                        <Icon name="send" className="text-golden-accent transition-transform group-hover:translate-x-2" />
+                      <motion.button whileTap={sending ? undefined : { scale: 0.98 }} type="submit" disabled={sending || !captchaToken} className="group flex w-full items-center justify-center gap-3 rounded bg-deep-navy py-4 font-headline-md text-headline-md text-white transition-all hover:bg-black disabled:cursor-not-allowed disabled:opacity-60">
+                        {sending ? 'Envoi en cours…' : 'Soumettre la Candidature'}
+                        {!sending && <Icon name="send" className="text-golden-accent transition-transform group-hover:translate-x-2" />}
                       </motion.button>
                       <p className="mt-4 text-center text-xs text-on-surface-variant">En soumettant ce formulaire, vous acceptez notre politique de confidentialité et de gestion des données partenaires.</p>
                     </div>

@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import Reveal from '../components/ui/Reveal'
 import AnimatedText from '../components/ui/AnimatedText'
 import Icon from '../components/ui/Icon'
+import { submitContact } from '../lib/submitForm'
 import { fadeUp, staggerContainer, easeApple } from '../lib/motion'
 
 const values = [
@@ -29,6 +30,24 @@ const departments = ['Tous les départements', 'Design', 'Marketing', 'Data']
 export default function Jobs() {
   const [dept, setDept] = useState('Tous les départements')
   const visible = jobs.filter((j) => dept === 'Tous les départements' || j.dept === dept)
+  const [subscribed, setSubscribed] = useState(false)
+  const [error, setError] = useState('')
+
+  async function handleSubscribe(e) {
+    e.preventDefault()
+    const email = new FormData(e.currentTarget).get('email')
+    setError('')
+    try {
+      await submitContact({
+        subject: 'Alertes emploi — dfb.digital',
+        Type: 'Alertes emploi / newsletter',
+        Email: email,
+      })
+      setSubscribed(true)
+    } catch (err) {
+      setError(err.message)
+    }
+  }
 
   return (
     <div className="bg-background text-on-surface">
@@ -161,10 +180,19 @@ export default function Jobs() {
           <div className="relative z-10 w-full md:w-1/2">
             <AnimatedText as="h2" text="Restez à l'écoute de nos projets." className="mb-6 font-headline-xl text-headline-xl-mobile text-deep-navy md:text-headline-xl" />
             <Reveal><p className="mb-8 font-body-md text-body-md text-on-surface-variant">Inscrivez-vous pour recevoir nos insights mensuels et les nouvelles opportunités en avant-première.</p></Reveal>
-            <form onSubmit={(e) => e.preventDefault()} className="flex flex-col gap-4 sm:flex-row">
-              <input className="flex-grow border-none bg-white p-4 font-body-md focus:ring-2 focus:ring-deep-navy" placeholder="Votre email professionnel" type="email" />
-              <button className="whitespace-nowrap bg-deep-navy px-8 py-4 font-label-caps uppercase tracking-widest text-white">S'inscrire</button>
-            </form>
+            {subscribed ? (
+              <p className="flex items-center gap-2 font-bold text-deep-navy">
+                <Icon name="check_circle" filled className="text-golden-accent" /> Merci ! Votre inscription est confirmée.
+              </p>
+            ) : (
+              <form onSubmit={handleSubscribe} className="flex flex-col gap-4 sm:flex-row">
+                <input name="email" className="flex-grow border-none bg-white p-4 font-body-md focus:ring-2 focus:ring-deep-navy" placeholder="Votre email professionnel" type="email" required />
+                <button className="whitespace-nowrap bg-deep-navy px-8 py-4 font-label-caps uppercase tracking-widest text-white" type="submit">S'inscrire</button>
+              </form>
+            )}
+            {error && !subscribed && (
+              <p className="mt-4 text-sm text-red-500" role="alert">{error}</p>
+            )}
           </div>
           <div className="hidden w-full md:block md:w-1/2">
             <div className="flex h-64 w-full items-center justify-center border border-deep-navy/10 opacity-20">

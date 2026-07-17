@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import Reveal from '../components/ui/Reveal'
 import Icon from '../components/ui/Icon'
+import { submitContact } from '../lib/submitForm'
 import { easeApple } from '../lib/motion'
 
 const categories = [
@@ -19,6 +20,23 @@ const recent = [
 
 export default function Article() {
   const [subscribed, setSubscribed] = useState(false)
+  const [error, setError] = useState('')
+
+  async function handleSubscribe(e) {
+    e.preventDefault()
+    const email = new FormData(e.currentTarget).get('email')
+    setError('')
+    try {
+      await submitContact({
+        subject: 'Inscription newsletter — dfb.digital',
+        Type: 'Inscription newsletter',
+        Email: email,
+      })
+      setSubscribed(true)
+    } catch (err) {
+      setError(err.message)
+    }
+  }
 
   return (
     <div className="bg-surface text-on-surface">
@@ -175,10 +193,13 @@ export default function Article() {
                 <Icon name="check_circle" filled /> Merci ! Votre inscription est confirmée.
               </motion.p>
             ) : (
-              <form onSubmit={(e) => { e.preventDefault(); setSubscribed(true) }} className="flex flex-col gap-4 md:flex-row">
-                <input className="flex-grow border border-white/20 bg-white/10 px-6 py-4 text-white outline-none placeholder:text-white/50 focus:ring-2 focus:ring-golden-accent" placeholder="votre@email.com" type="email" required />
+              <form onSubmit={handleSubscribe} className="flex flex-col gap-4 md:flex-row">
+                <input name="email" className="flex-grow border border-white/20 bg-white/10 px-6 py-4 text-white outline-none placeholder:text-white/50 focus:ring-2 focus:ring-golden-accent" placeholder="votre@email.com" type="email" required />
                 <button className="bg-golden-accent px-8 py-4 font-bold uppercase tracking-widest text-deep-navy transition-colors hover:bg-white" type="submit">S'ABONNER</button>
               </form>
+            )}
+            {error && !subscribed && (
+              <p className="mt-4 text-sm text-red-400" role="alert">{error}</p>
             )}
           </div>
         </section>
