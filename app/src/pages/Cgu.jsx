@@ -4,6 +4,7 @@ import Reveal from '../components/ui/Reveal'
 import AnimatedText from '../components/ui/AnimatedText'
 import Magnetic from '../components/ui/MagneticButton'
 import Icon from '../components/ui/Icon'
+import { LEGAL } from '../data/site'
 
 const toc = [
   { id: 'objet', label: '01. Objet' },
@@ -110,13 +111,13 @@ export default function Cgu() {
               <div className="grid gap-8 md:grid-cols-2">
                 <div>
                   <p className="mb-2 font-bold text-deep-navy">Éditeur du Site</p>
-                  <p>Digital For Business (DFB)<br />Capital de [Montant] euros<br />R.C.S. Paris [Numéro RCS]<br />61 Boulevard Haussmann, 75008 Paris</p>
+                  <p>{LEGAL.companyName}<br />Capital de {LEGAL.capital}<br />{LEGAL.rcs}<br />{LEGAL.address}</p>
                 </div>
                 <div>
                   <p className="mb-2 font-bold text-deep-navy">Directeur de publication</p>
-                  <p>Marc-Antoine Durand</p>
+                  <p>{LEGAL.publicationDirector}</p>
                   <p className="mb-2 mt-4 font-bold text-deep-navy">Hébergement</p>
-                  <p>[Nom de l'hébergeur]<br />[Adresse de l'hébergeur]</p>
+                  <p>{LEGAL.host.name}<br />{LEGAL.host.address}<br />{LEGAL.host.contact}</p>
                 </div>
               </div>
             </section>

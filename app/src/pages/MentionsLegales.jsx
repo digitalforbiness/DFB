@@ -1,5 +1,6 @@
 import Reveal from '../components/ui/Reveal'
 import AnimatedText from '../components/ui/AnimatedText'
+import { CONTACT, LEGAL } from '../data/site'
 
 export default function MentionsLegales() {
   return (
@@ -24,15 +25,15 @@ export default function MentionsLegales() {
           <Reveal as="article" id="mentions-legales">
             <h2>1. Éditeur du Site</h2>
             <p>Le présent site, accessible à l'URL <a href="https://dfb.digital/">https://dfb.digital/</a> (le « Site »), est édité par :</p>
-            <p><strong>Digital For Business (DFB)</strong>, société au capital de [Montant] euros, inscrite au R.C.S. de Paris sous le numéro [Numéro RCS], dont le siège social est situé au 61 Boulevard Haussmann, 75008 Paris, France.</p>
+            <p><strong>{LEGAL.companyName}</strong>, société au capital de {LEGAL.capital}, immatriculée sous le numéro {LEGAL.rcs}, dont le siège social est situé au {LEGAL.address}.</p>
             <h2>2. Hébergement</h2>
-            <p>Le Site est hébergé par la société [Nom de l'hébergeur], situé [Adresse de l'hébergeur], (contact téléphonique ou email : [Contact]).</p>
+            <p>Le Site est hébergé par la société {LEGAL.host.name}, situé {LEGAL.host.address} (contact : <a href={LEGAL.host.contact}>{LEGAL.host.contact}</a>).</p>
             <h2>3. Directeur de publication</h2>
-            <p>Le Directeur de la publication du Site est Marc-Antoine Durand.</p>
+            <p>Le Directeur de la publication du Site est {LEGAL.publicationDirector}.</p>
             <h2>4. Propriété Intellectuelle</h2>
             <p>L'ensemble de ce site relève de la législation française et internationale sur le droit d'auteur et la propriété intellectuelle. Tous les droits de reproduction sont réservés, y compris pour les documents téléchargeables et les représentations iconographiques et photographiques.</p>
             <h2>5. Contact</h2>
-            <p>Pour toute question, vous pouvez nous contacter à l'adresse suivante : <a href="mailto:contact@dfb.digital">contact@dfb.digital</a> ou par téléphone au <strong>+33 (0)9 54 27 50 80</strong>.</p>
+            <p>Pour toute question, vous pouvez nous contacter à l'adresse suivante : <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a> ou par téléphone au <strong>{CONTACT.phoneDisplay}</strong>.</p>
           </Reveal>
 
           <div className="my-10 border-b border-surface-container" />

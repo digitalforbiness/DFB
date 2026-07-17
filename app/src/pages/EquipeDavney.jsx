@@ -4,6 +4,7 @@ import Reveal from '../components/ui/Reveal'
 import AnimatedText from '../components/ui/AnimatedText'
 import Magnetic from '../components/ui/MagneticButton'
 import Icon from '../components/ui/Icon'
+import { CONTACT, OFFICES } from '../data/site'
 import { fadeUp, staggerContainer, easeApple } from '../lib/motion'
 
 const journey = [
@@ -15,9 +16,9 @@ const journey = [
 const visionPoints = ['Scalable Business Architecture', 'AI-Enhanced Customer Journeys', 'Data-Driven Growth Engines']
 
 const contactItems = [
-  { icon: 'mail', label: 'EMAIL', value: 'contact@dfb.digital', href: 'mailto:contact@dfb.digital' },
-  { icon: 'call', label: 'DIRECT LINE', value: '+33 6 95 98 71 07', href: 'tel:+33695987107' },
-  { icon: 'location_on', label: 'OFFICE', value: 'Paris & Dubai' },
+  { icon: 'mail', label: 'EMAIL', value: CONTACT.email, href: `mailto:${CONTACT.email}` },
+  { icon: 'call', label: 'DIRECT LINE', value: CONTACT.phoneDisplay, href: CONTACT.phoneHref },
+  { icon: 'location_on', label: 'OFFICE', value: OFFICES.join(', ') },
 ]
 
 export default function EquipeDavney() {

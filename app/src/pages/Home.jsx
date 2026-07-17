@@ -7,6 +7,7 @@ import Magnetic from '../components/ui/MagneticButton'
 import Marquee from '../components/ui/Marquee'
 import Icon from '../components/ui/Icon'
 import ContactForm from '../components/ContactForm'
+import { CONTACT, REFERENCES } from '../data/site'
 import { fadeUp, staggerContainer, easeApple } from '../lib/motion'
 
 const services = [
@@ -266,9 +267,9 @@ export default function Home() {
           <span className="text-center font-label-caps text-label-caps uppercase text-surface-variant/40 md:text-left">
             Ils nous font confiance
           </span>
-          <Marquee speed={28} className="opacity-60">
-            {['ETRAELEC', 'NEHO FRET', 'QITCH', 'ETRAELEC', 'NEHO FRET', 'QITCH'].map((name, i) => (
-              <span key={i} className="whitespace-nowrap font-display-lg text-3xl font-bold tracking-tighter text-white">
+          <Marquee speed={60} className="opacity-60">
+            {REFERENCES.map((name) => (
+              <span key={name} className="whitespace-nowrap font-display-lg text-3xl font-bold tracking-tighter text-white">
                 {name}
               </span>
             ))}
@@ -289,9 +290,9 @@ export default function Home() {
               </Reveal>
               <div className="space-y-8">
                 {[
-                  { icon: 'location_on', title: 'Paris Office', text: '61 Bd Haussmann, 75008 Paris, France' },
-                  { icon: 'mail', title: 'Email', text: 'contact@dfb.digital' },
-                  { icon: 'call', title: 'Téléphone', text: '+33 9 54 27 50 80' },
+                  { icon: 'location_on', title: 'Paris Office', text: `${CONTACT.address.line1}, ${CONTACT.address.line2}` },
+                  { icon: 'mail', title: 'Email', text: CONTACT.email },
+                  { icon: 'call', title: 'Téléphone', text: CONTACT.phoneDisplay },
                 ].map((c, i) => (
                   <Reveal key={c.icon} delay={i * 0.1} className="flex items-start gap-4">
                     <Icon name={c.icon} className="text-golden-accent" />

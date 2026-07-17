@@ -2,6 +2,7 @@ import { Outlet, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import Header from './Header'
 import Footer from './Footer'
+import CookieConsent from './CookieConsent'
 import ScrollToTop from './ScrollToTop'
 import ScrollProgress from './ui/ScrollProgress'
 import ErrorBoundary from './ErrorBoundary'
@@ -34,6 +35,7 @@ export default function Layout() {
         </ErrorBoundary>
       </main>
       <Footer />
+      <CookieConsent />
     </div>
   )
 }

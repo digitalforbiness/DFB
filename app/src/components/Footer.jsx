@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import Icon from './ui/Icon'
+import SocialIcon from './ui/SocialIcon'
 import Reveal from './ui/Reveal'
+import { SOCIALS } from '../data/site'
 import { easeApple } from '../lib/motion'
 
 const columns = [
@@ -65,18 +66,18 @@ export default function Footer() {
             <Reveal direction="up" delay={0.2}>
               <h6 className="mb-6 font-bold text-white">Suivez-nous</h6>
               <div className="flex gap-4">
-                {[
-                  { icon: 'link', href: '#' },
-                  { icon: 'alternate_email', href: '#' },
-                ].map((s) => (
+                {SOCIALS.map((s) => (
                   <motion.a
-                    key={s.icon}
+                    key={s.name}
                     href={s.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label={s.label}
                     whileHover={{ y: -4 }}
                     transition={{ duration: 0.3, ease: easeApple }}
                     className="flex h-10 w-10 items-center justify-center border border-white/10 text-white/70 transition-all hover:border-golden-accent hover:bg-golden-accent hover:text-deep-navy"
                   >
-                    <Icon name={s.icon} className="text-sm" />
+                    <SocialIcon name={s.name} className="h-4 w-4" />
                   </motion.a>
                 ))}
               </div>

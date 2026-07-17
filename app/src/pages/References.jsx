@@ -7,6 +7,7 @@ import Magnetic from '../components/ui/MagneticButton'
 import Marquee from '../components/ui/Marquee'
 import Counter from '../components/ui/Counter'
 import Icon from '../components/ui/Icon'
+import { REFERENCES } from '../data/site'
 import { easeApple } from '../lib/motion'
 
 const filters = [
@@ -31,8 +32,6 @@ const figures = [
   { to: 200, suffix: '+', label: 'Projets Livrés' },
   { to: 98, suffix: '%', label: 'Taux de Rétention' },
 ]
-
-const clients = ['ETRAELEC', 'NEHO FRET', 'QITCH', 'TEK SOLUTIONS', 'GLOBAL LOGISTICS', 'AERO DESIGN']
 
 function ProjectCard({ p, wide }) {
   if (wide) {
@@ -162,9 +161,9 @@ export default function References() {
             Ils nous font confiance
           </h2>
         </div>
-        <Marquee speed={30}>
-          {clients.map((c, i) => (
-            <span key={i} className="cursor-default whitespace-nowrap font-headline-lg text-deep-navy/30 transition-colors hover:text-deep-navy">
+        <Marquee speed={60}>
+          {REFERENCES.map((c) => (
+            <span key={c} className="cursor-default whitespace-nowrap font-headline-lg text-deep-navy/30 transition-colors hover:text-deep-navy">
               {c}
             </span>
           ))}
